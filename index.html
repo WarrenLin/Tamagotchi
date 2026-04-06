@@ -3,101 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Q版電子雞 Tamagotchi</title>
+  <title>Tamagotchi</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="stars" id="stars"></div>
 
   <div class="device">
-    <div class="device-top">
-      <div class="antenna left"></div>
-      <div class="antenna right"></div>
+    <!-- Chain -->
+    <div class="chain">
+      <div class="chain-ring"></div>
+      <div class="chain-balls">
+        <span class="ball"></span><span class="ball"></span><span class="ball"></span>
+        <span class="ball"></span><span class="ball"></span>
+      </div>
     </div>
-    <div class="device-body">
+
+    <!-- Egg Body -->
+    <div class="egg">
+      <!-- Flame decorations -->
+      <div class="flame flame-left">
+        <div class="flame-tip f1"></div>
+        <div class="flame-tip f2"></div>
+        <div class="flame-tip f3"></div>
+      </div>
+      <div class="flame flame-right">
+        <div class="flame-tip f1"></div>
+        <div class="flame-tip f2"></div>
+        <div class="flame-tip f3"></div>
+      </div>
+
+      <!-- Logo -->
+      <div class="logo">TaMaGoTcHi</div>
+
+      <!-- Screen frame -->
       <div class="screen-frame">
-        <div class="screen" id="screen">
-          <!-- Status Bar -->
-          <div class="status-bar">
-            <div class="stat">
-              <span class="stat-icon">❤️</span>
-              <div class="stat-bar"><div class="stat-fill" id="happiness-bar"></div></div>
-            </div>
-            <div class="stat">
-              <span class="stat-icon">🍔</span>
-              <div class="stat-bar"><div class="stat-fill" id="hunger-bar"></div></div>
-            </div>
-            <div class="stat">
-              <span class="stat-icon">⚡</span>
-              <div class="stat-bar"><div class="stat-fill" id="energy-bar"></div></div>
-            </div>
-            <div class="stat">
-              <span class="stat-icon">✨</span>
-              <div class="stat-bar"><div class="stat-fill" id="clean-bar"></div></div>
-            </div>
-          </div>
+        <!-- Icon row top -->
+        <div class="icon-row top-icons">
+          <div class="screen-icon" title="餵食">🍴</div>
+          <div class="screen-icon" title="燈光">💡</div>
+          <div class="screen-icon" title="玩耍">⚾</div>
+          <div class="screen-icon" title="治療">💉</div>
+        </div>
 
-          <!-- Pet Area -->
-          <div class="pet-area">
-            <div class="pet-container">
-              <div class="pet" id="pet">
-                <div class="pet-body">
-                  <div class="pet-face">
-                    <div class="eye left-eye"><div class="pupil"></div><div class="eye-shine"></div></div>
-                    <div class="eye right-eye"><div class="pupil"></div><div class="eye-shine"></div></div>
-                    <div class="blush left-blush"></div>
-                    <div class="blush right-blush"></div>
-                    <div class="mouth" id="mouth"></div>
-                  </div>
-                  <div class="pet-arm left-arm"></div>
-                  <div class="pet-arm right-arm"></div>
-                  <div class="pet-feet">
-                    <div class="foot left-foot"></div>
-                    <div class="foot right-foot"></div>
-                  </div>
-                </div>
-              </div>
-              <!-- Floating emojis -->
-              <div class="float-emoji" id="float-emoji"></div>
-            </div>
-            <div class="ground"></div>
-          </div>
-
-          <!-- Pet Info -->
-          <div class="pet-info">
-            <span class="pet-name" id="pet-name">小圓子</span>
-            <span class="pet-age" id="pet-age">0 天</span>
-          </div>
-
-          <!-- Message -->
+        <!-- LCD Screen -->
+        <div class="lcd-screen">
+          <canvas id="pet-canvas" width="160" height="160"></canvas>
+          <div class="float-emoji" id="float-emoji"></div>
           <div class="message" id="message"></div>
+        </div>
+
+        <!-- Icon row bottom -->
+        <div class="icon-row bottom-icons">
+          <div class="screen-icon" title="清潔">🛁</div>
+          <div class="screen-icon" title="狀態">📊</div>
+          <div class="screen-icon" title="紀律">📢</div>
+          <div class="screen-icon" title="注意">⚠️</div>
         </div>
       </div>
 
-      <!-- Buttons -->
+      <!-- Status bars (inside egg, below screen) -->
+      <div class="status-area">
+        <div class="stat-row">
+          <span class="stat-label">HP</span>
+          <div class="stat-bar"><div class="stat-fill" id="happiness-bar"></div></div>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">FD</span>
+          <div class="stat-bar"><div class="stat-fill" id="hunger-bar"></div></div>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">EN</span>
+          <div class="stat-bar"><div class="stat-fill" id="energy-bar"></div></div>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">CL</span>
+          <div class="stat-bar"><div class="stat-fill" id="clean-bar"></div></div>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="pet-info">
+        <span id="pet-name">小圓子</span>
+        <span id="pet-age">DAY 0</span>
+      </div>
+
+      <!-- 3 Round buttons (classic Tamagotchi) -->
       <div class="buttons">
-        <button class="btn feed-btn" onclick="feedPet()" title="餵食">
-          <span class="btn-icon">🍙</span>
-          <span class="btn-label">餵食</span>
-        </button>
-        <button class="btn play-btn" onclick="playWithPet()" title="玩耍">
-          <span class="btn-icon">🎾</span>
-          <span class="btn-label">玩耍</span>
-        </button>
-        <button class="btn sleep-btn" onclick="putToSleep()" title="睡覺">
-          <span class="btn-icon">💤</span>
-          <span class="btn-label">睡覺</span>
-        </button>
-        <button class="btn clean-btn" onclick="cleanPet()" title="清潔">
-          <span class="btn-icon">🛁</span>
-          <span class="btn-label">清潔</span>
-        </button>
-        <button class="btn heal-btn" onclick="healPet()" title="治療">
-          <span class="btn-icon">💊</span>
-          <span class="btn-label">治療</span>
-        </button>
+        <button class="round-btn" id="btn-a" title="選擇">A</button>
+        <button class="round-btn" id="btn-b" title="確認">B</button>
+        <button class="round-btn" id="btn-c" title="取消">C</button>
       </div>
     </div>
+  </div>
+
+  <!-- Action menu (appears when pressing buttons) -->
+  <div class="action-menu" id="action-menu">
+    <div class="menu-item" data-action="feed">🍙 餵食</div>
+    <div class="menu-item" data-action="play">⚾ 玩耍</div>
+    <div class="menu-item" data-action="sleep">💤 睡覺</div>
+    <div class="menu-item" data-action="clean">🛁 清潔</div>
+    <div class="menu-item" data-action="heal">💊 治療</div>
   </div>
 
   <script src="game.js"></script>

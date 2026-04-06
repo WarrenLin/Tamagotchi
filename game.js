@@ -1,4 +1,217 @@
-// ===== Q版電子雞 Tamagotchi - Game Logic =====
+// ===== Tamagotchi - Classic Pixel Style =====
+
+// --- Pixel Art Sprites ---
+// 16x16 grid, color codes: 0=transparent, 1=dark, 2=mid, 3=light
+const SPRITES = {
+  normal: [
+    '0000001111000000',
+    '0000113333110000',
+    '0001333333331000',
+    '0013333333333100',
+    '0013333333333100',
+    '0133133331331310',
+    '0133133331331310',
+    '0133333333333310',
+    '0133333113333310',
+    '0133333333333310',
+    '0013333333333100',
+    '0001333333331000',
+    '0000133333310000',
+    '0000013003100000',
+    '0000013003100000',
+    '0000011001100000',
+  ],
+  happy: [
+    '0000001111000000',
+    '0000113333110000',
+    '0001333333331000',
+    '0013333333333100',
+    '0013333333333100',
+    '0133133331331310',
+    '0133133331331310',
+    '0133333333333310',
+    '0133311331133310',
+    '0133333333333310',
+    '0013333333333100',
+    '0001333333331000',
+    '0000133333310000',
+    '0000013003100000',
+    '0000013003100000',
+    '0000011001100000',
+  ],
+  eating: [
+    '0000001111000000',
+    '0000113333110000',
+    '0001333333331000',
+    '0013333333333100',
+    '0013333333333100',
+    '0133133331331310',
+    '0133133331331310',
+    '0133333333333310',
+    '0133333113333310',
+    '0133333333333310',
+    '0013333333333100',
+    '0001333333331000',
+    '1100133333310000',
+    '1310013003100000',
+    '1100013003100000',
+    '0000011001100000',
+  ],
+  eating2: [
+    '0000001111000000',
+    '0000113333110000',
+    '0001333333331000',
+    '0013333333333100',
+    '0013333333333100',
+    '0133133331331310',
+    '0133133331331310',
+    '0133333333333310',
+    '0133331111333310',
+    '0133333333333310',
+    '0013333333333100',
+    '0001333333331000',
+    '1100133333310000',
+    '1310013003100000',
+    '1100013003100000',
+    '0000011001100000',
+  ],
+  sleeping: [
+    '0000001111000000',
+    '0000113333110000',
+    '0001333333331000',
+    '0013333333333100',
+    '0013333333333100',
+    '0133333333333310',
+    '0133311331133310',
+    '0133333333333310',
+    '0133333333333310',
+    '0133333113333310',
+    '0013333333333100',
+    '0001333333331000',
+    '0000133333310000',
+    '0000013333100000',
+    '0000013333100000',
+    '0000011111100000',
+  ],
+  sad: [
+    '0000001111000000',
+    '0000113333110000',
+    '0001333333331000',
+    '0013333333333100',
+    '0013333333333100',
+    '0133133331331310',
+    '0133133331331310',
+    '0133333333333310',
+    '0133331111333310',
+    '0133311331133310',
+    '0013333333333100',
+    '0001333333331000',
+    '0000133333310000',
+    '0000013003100000',
+    '0000013003100000',
+    '0000011001100000',
+  ],
+  sick: [
+    '0000001111000000',
+    '0000112222110000',
+    '0001222222221000',
+    '0012222222222100',
+    '0012222222222100',
+    '0122122221221210',
+    '0122122221221210',
+    '0122222222222210',
+    '0122222112222210',
+    '0122222222222210',
+    '0012222222222100',
+    '0001222222221000',
+    '0000122222210000',
+    '0000012002100000',
+    '0000012002100000',
+    '0000011001100000',
+  ],
+  dead: [
+    '0000001111000000',
+    '0000112222110000',
+    '0001222222221000',
+    '0012222222222100',
+    '0012222222222100',
+    '0122121221212210',
+    '0122212112222210',
+    '0122121221212210',
+    '0122222222222210',
+    '0122222112222210',
+    '0012222222222100',
+    '0001222222221000',
+    '0000122222210000',
+    '0000012222100000',
+    '0000012222100000',
+    '0000011111100000',
+  ],
+  playing: [
+    '0000001111000000',
+    '0000113333110000',
+    '0001333333331000',
+    '0013333333333100',
+    '0013333333333100',
+    '0133133331331310',
+    '0133133331331310',
+    '0133333333333310',
+    '0133311331133310',
+    '0133333333333310',
+    '0013333333333100',
+    '1101333333331011',
+    '1310133333310131',
+    '1100013003100011',
+    '0000013003100000',
+    '0000110000110000',
+  ],
+  playing2: [
+    '0000000000000000',
+    '0000001111000000',
+    '0000113333110000',
+    '0001333333331000',
+    '0013333333333100',
+    '0133133331331310',
+    '0133133331331310',
+    '0133333333333310',
+    '0133311331133310',
+    '0133333333333310',
+    '1113333333333111',
+    '1311333333331131',
+    '1110133333310111',
+    '0000013003100000',
+    '0000110000110000',
+    '0000000000000000',
+  ],
+};
+
+const ZZZ_SPRITES = [
+  [
+    '00000',
+    '01110',
+    '00010',
+    '00100',
+    '01000',
+    '01110',
+    '00000',
+  ],
+  [
+    '01110',
+    '00010',
+    '00100',
+    '01000',
+    '01110',
+    '00000',
+    '00000',
+  ],
+];
+
+const COLORS = {
+  '0': 'transparent',
+  '1': '#405020',
+  '2': '#6a7a3a',
+  '3': '#a0b848',
+};
 
 // --- State ---
 const state = {
@@ -7,7 +220,7 @@ const state = {
   hunger: 80,
   energy: 80,
   cleanliness: 80,
-  age: 0,        // in "days"
+  age: 0,
   alive: true,
   sick: false,
   sleeping: false,
@@ -15,15 +228,22 @@ const state = {
   eating: false,
   sickTimer: null,
   lastUpdate: Date.now(),
+  animFrame: 0,
+  menuOpen: false,
+  menuIndex: 0,
 };
 
 // --- DOM refs ---
-const pet = document.getElementById('pet');
-const mouth = document.getElementById('mouth');
+const canvas = document.getElementById('pet-canvas');
+const ctx = canvas.getContext('2d');
 const floatEmoji = document.getElementById('float-emoji');
 const messageEl = document.getElementById('message');
 const petNameEl = document.getElementById('pet-name');
 const petAgeEl = document.getElementById('pet-age');
+const actionMenu = document.getElementById('action-menu');
+const btnA = document.getElementById('btn-a');
+const btnB = document.getElementById('btn-b');
+const btnC = document.getElementById('btn-c');
 
 const bars = {
   happiness: document.getElementById('happiness-bar'),
@@ -32,45 +252,220 @@ const bars = {
   cleanliness: document.getElementById('clean-bar'),
 };
 
+const PIXEL = 10;
+
+const ACTIONS = ['feed', 'play', 'sleep', 'clean', 'heal'];
+
 // --- Init ---
 function init() {
   loadState();
   renderStats();
-  renderPetState();
+  drawPet();
   createStars();
   petNameEl.textContent = state.name;
 
-  // Main game loop: decay stats every 5 seconds
+  // Animation loop
+  setInterval(() => {
+    state.animFrame = 1 - state.animFrame;
+    drawPet();
+  }, 500);
+
   setInterval(decayStats, 5000);
 
-  // Age up every 60 seconds
   setInterval(() => {
     if (!state.alive) return;
     state.age++;
-    petAgeEl.textContent = `${state.age} 天`;
+    petAgeEl.textContent = `DAY ${state.age}`;
     saveState();
   }, 60000);
 
-  // Auto-save every 10 seconds
   setInterval(saveState, 10000);
 
-  // Click on pet for a reaction
-  pet.addEventListener('click', onPetClick);
+  // Button handlers (classic 3-button interface)
+  btnA.addEventListener('click', onBtnA);
+  btnB.addEventListener('click', onBtnB);
+  btnC.addEventListener('click', onBtnC);
+
+  // Menu item clicks
+  document.querySelectorAll('.menu-item').forEach((item, i) => {
+    item.addEventListener('click', () => {
+      executeAction(ACTIONS[i]);
+      closeMenu();
+    });
+  });
+
+  // Click on pet canvas
+  canvas.addEventListener('click', onPetClick);
+
+  // Keyboard support
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') onBtnA();
+    if (e.key === 's' || e.key === 'S' || e.key === 'Enter' || e.key === 'ArrowDown') onBtnB();
+    if (e.key === 'd' || e.key === 'D' || e.key === 'Escape' || e.key === 'ArrowRight') onBtnC();
+  });
 }
 
-// --- Stars Background ---
+// --- 3-Button Interface ---
+function onBtnA() {
+  if (!state.alive) return;
+  if (state.menuOpen) {
+    // Navigate up in menu
+    state.menuIndex = (state.menuIndex - 1 + ACTIONS.length) % ACTIONS.length;
+    updateMenuSelection();
+  } else {
+    openMenu();
+  }
+}
+
+function onBtnB() {
+  if (!state.alive) return;
+  if (state.menuOpen) {
+    executeAction(ACTIONS[state.menuIndex]);
+    closeMenu();
+  } else {
+    openMenu();
+  }
+}
+
+function onBtnC() {
+  if (state.menuOpen) {
+    if (state.menuOpen) {
+      // Navigate down OR close
+      state.menuIndex++;
+      if (state.menuIndex >= ACTIONS.length) {
+        closeMenu();
+      } else {
+        updateMenuSelection();
+      }
+    }
+  }
+}
+
+function openMenu() {
+  state.menuOpen = true;
+  state.menuIndex = 0;
+  actionMenu.classList.add('show');
+  updateMenuSelection();
+}
+
+function closeMenu() {
+  state.menuOpen = false;
+  actionMenu.classList.remove('show');
+}
+
+function updateMenuSelection() {
+  document.querySelectorAll('.menu-item').forEach((item, i) => {
+    item.classList.toggle('selected', i === state.menuIndex);
+  });
+}
+
+function executeAction(action) {
+  switch (action) {
+    case 'feed': feedPet(); break;
+    case 'play': playWithPet(); break;
+    case 'sleep': putToSleep(); break;
+    case 'clean': cleanPet(); break;
+    case 'heal': healPet(); break;
+  }
+}
+
+// --- Stars ---
 function createStars() {
   const container = document.getElementById('stars');
-  const count = 60;
-  for (let i = 0; i < count; i++) {
+  for (let i = 0; i < 40; i++) {
     const star = document.createElement('div');
     star.className = 'star';
-    star.style.left = Math.random() * 100 + '%';
-    star.style.top = Math.random() * 100 + '%';
-    star.style.setProperty('--duration', (2 + Math.random() * 4) + 's');
-    star.style.setProperty('--max-opacity', (0.4 + Math.random() * 0.6).toString());
-    star.style.animationDelay = Math.random() * 4 + 's';
+    star.style.left = Math.floor(Math.random() * 100) + '%';
+    star.style.top = Math.floor(Math.random() * 100) + '%';
+    star.style.setProperty('--duration', (1 + Math.floor(Math.random() * 3)) + 's');
+    star.style.setProperty('--max-opacity', (0.5 + Math.random() * 0.5).toString());
+    star.style.animationDelay = Math.floor(Math.random() * 3) + 's';
     container.appendChild(star);
+  }
+}
+
+// --- Draw Pet ---
+function drawPet() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  let spriteName = 'normal';
+  let offsetY = 0;
+
+  if (!state.alive) {
+    spriteName = 'dead';
+  } else if (state.sick) {
+    spriteName = 'sick';
+    offsetY = state.animFrame ? -2 : 2;
+  } else if (state.sleeping) {
+    spriteName = 'sleeping';
+    offsetY = state.animFrame ? -2 : 0;
+  } else if (state.playing) {
+    spriteName = state.animFrame ? 'playing2' : 'playing';
+  } else if (state.eating) {
+    spriteName = state.animFrame ? 'eating2' : 'eating';
+  } else if (state.happiness >= 60) {
+    spriteName = 'happy';
+    offsetY = state.animFrame ? -4 : 0;
+  } else if (state.happiness >= 30) {
+    spriteName = 'normal';
+    offsetY = state.animFrame ? -2 : 0;
+  } else {
+    spriteName = 'sad';
+  }
+
+  const sprite = SPRITES[spriteName];
+  if (!sprite) return;
+
+  for (let y = 0; y < sprite.length; y++) {
+    for (let x = 0; x < sprite[y].length; x++) {
+      const c = sprite[y][x];
+      if (c === '0') continue;
+      ctx.fillStyle = COLORS[c];
+      ctx.fillRect(x * PIXEL, (y * PIXEL) + offsetY, PIXEL, PIXEL);
+    }
+  }
+
+  // Zzz
+  if (state.sleeping && state.alive) {
+    const zzzSprite = ZZZ_SPRITES[state.animFrame];
+    const zx = 130, zy = state.animFrame ? 0 : 10;
+    for (let y = 0; y < zzzSprite.length; y++) {
+      for (let x = 0; x < zzzSprite[y].length; x++) {
+        if (zzzSprite[y][x] === '1') {
+          ctx.fillStyle = '#405020';
+          ctx.fillRect(zx + x * 5, zy + y * 5, 5, 5);
+        }
+      }
+    }
+  }
+
+  // Sweat when sick
+  if (state.sick && state.alive) {
+    const dx = 132, dy = 20 + (state.animFrame ? 10 : 0);
+    ctx.fillStyle = '#405020';
+    ctx.fillRect(dx, dy, 5, 5);
+    ctx.fillRect(dx - 5, dy + 5, 5, 5);
+    ctx.fillRect(dx, dy + 5, 5, 5);
+    ctx.fillRect(dx + 5, dy + 5, 5, 5);
+    ctx.fillRect(dx, dy + 10, 5, 5);
+  }
+
+  // Sparkles when playing
+  if (state.playing && state.alive) {
+    const pts = state.animFrame
+      ? [[5, 10], [140, 25], [25, 140]]
+      : [[15, 25], [130, 10], [10, 130]];
+    ctx.fillStyle = '#405020';
+    pts.forEach(([sx, sy]) => {
+      ctx.fillRect(sx + 2, sy, 2, 6);
+      ctx.fillRect(sx, sy + 2, 6, 2);
+    });
+  }
+
+  // Dead flicker
+  if (!state.alive && state.animFrame) {
+    ctx.fillStyle = 'rgba(200, 220, 120, 0.2)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
 }
 
@@ -78,7 +473,6 @@ function createStars() {
 function decayStats() {
   if (!state.alive) return;
   if (state.sleeping) {
-    // While sleeping, energy recovers, others decay slower
     state.energy = clamp(state.energy + 2);
     state.hunger = clamp(state.hunger - 0.5);
     state.happiness = clamp(state.happiness - 0.3);
@@ -89,29 +483,22 @@ function decayStats() {
     state.energy = clamp(state.energy - 0.8);
     state.cleanliness = clamp(state.cleanliness - 0.6);
   }
-
   checkSick();
   renderStats();
-  renderPetState();
 }
 
 // --- Sickness & Death ---
 function checkSick() {
   if (!state.alive) return;
-
   const anyZero = state.happiness <= 0 || state.hunger <= 0 ||
                   state.energy <= 0 || state.cleanliness <= 0;
-
   if (anyZero && !state.sick) {
     state.sick = true;
     state.sleeping = false;
     state.playing = false;
-    showMessage('嗚嗚...我不舒服 😢');
-    // Start death countdown
+    showMessage('嗚嗚...不舒服...');
     state.sickTimer = setTimeout(() => {
-      if (state.sick && state.alive) {
-        die();
-      }
+      if (state.sick && state.alive) die();
     }, 30000);
   }
 }
@@ -122,9 +509,8 @@ function die() {
   state.sleeping = false;
   state.playing = false;
   clearTimeout(state.sickTimer);
-  renderPetState();
   renderStats();
-  showMessage('小圓子離開了... 再見 💔');
+  showMessage('再見了...');
   disableButtons(true);
   saveState();
 }
@@ -132,112 +518,71 @@ function die() {
 // --- Actions ---
 function feedPet() {
   if (!state.alive || state.sleeping || state.eating) return;
-
   state.eating = true;
   state.hunger = clamp(state.hunger + 25);
   state.happiness = clamp(state.happiness + 5);
   state.cleanliness = clamp(state.cleanliness - 3);
-
   showFloatEmoji('🍙');
-  showMessage('好好吃！謝謝～ 😋');
+  showMessage('好好吃！');
   renderStats();
-
-  // Eating animation
-  pet.classList.remove('playing');
-  mouth.className = 'mouth eating';
-
-  setTimeout(() => {
-    state.eating = false;
-    renderPetState();
-  }, 2000);
-
+  setTimeout(() => { state.eating = false; }, 2000);
   saveState();
 }
 
 function playWithPet() {
   if (!state.alive || state.sleeping || state.playing || state.sick) return;
-  if (state.energy < 10) {
-    showMessage('太累了...先讓我休息一下 😴');
-    return;
-  }
-
+  if (state.energy < 10) { showMessage('太累了...'); return; }
   state.playing = true;
   state.happiness = clamp(state.happiness + 20);
   state.energy = clamp(state.energy - 15);
   state.hunger = clamp(state.hunger - 5);
   state.cleanliness = clamp(state.cleanliness - 5);
-
-  showFloatEmoji('🎾');
-  showMessage('好開心！再來再來！ 🥳');
+  showFloatEmoji('⭐');
+  showMessage('好開心！');
   renderStats();
-
-  pet.classList.add('playing');
-  mouth.className = 'mouth happy';
-
-  setTimeout(() => {
-    state.playing = false;
-    pet.classList.remove('playing');
-    renderPetState();
-  }, 3000);
-
+  setTimeout(() => { state.playing = false; }, 3000);
   saveState();
 }
 
 function putToSleep() {
   if (!state.alive || state.sick) return;
-
   if (state.sleeping) {
-    // Wake up
     state.sleeping = false;
-    removeZzz();
-    showMessage('早安！睡得好飽～ ☀️');
+    showMessage('早安！');
     showFloatEmoji('☀️');
   } else {
-    // Go to sleep
     state.sleeping = true;
     state.playing = false;
-    pet.classList.remove('playing');
-    showMessage('晚安...Zzz 🌙');
+    showMessage('晚安 Zzz');
     showFloatEmoji('🌙');
-    addZzz();
   }
-
-  renderPetState();
   saveState();
 }
 
 function cleanPet() {
   if (!state.alive || state.sleeping) return;
-
   state.cleanliness = clamp(state.cleanliness + 25);
   state.happiness = clamp(state.happiness + 5);
-
   showFloatEmoji('✨');
-  showMessage('洗得好乾淨！亮晶晶～ ✨');
+  showMessage('好乾淨！');
   renderStats();
-  renderPetState();
   saveState();
 }
 
 function healPet() {
   if (!state.alive || !state.sick) {
-    if (state.alive && !state.sick) {
-      showMessage('我很健康唷！不需要吃藥 😊');
-    }
+    if (state.alive && !state.sick) showMessage('很健康唷！');
     return;
   }
-
   clearTimeout(state.sickTimer);
   state.sick = false;
   state.happiness = clamp(state.happiness + 15);
   state.hunger = clamp(state.hunger + 15);
   state.energy = clamp(state.energy + 15);
   state.cleanliness = clamp(state.cleanliness + 15);
-
   showFloatEmoji('💊');
-  showMessage('吃了藥好多了！謝謝你 💕');
+  showMessage('好多了！');
   renderStats();
-  renderPetState();
   saveState();
 }
 
@@ -245,106 +590,30 @@ function healPet() {
 function onPetClick() {
   if (!state.alive) return;
   if (state.sleeping || state.playing || state.eating || state.sick) return;
-
   state.happiness = clamp(state.happiness + 3);
   renderStats();
-
-  const reactions = ['💕', '🥰', '😆', '💖', '🌟'];
+  const reactions = ['💕', '❤️', '⭐', '💖', '🌟'];
   showFloatEmoji(reactions[Math.floor(Math.random() * reactions.length)]);
-
-  const messages = ['摸摸好舒服～', '嘿嘿 😊', '最喜歡你了！', '好開心！', '再摸摸～'];
-  showMessage(messages[Math.floor(Math.random() * messages.length)]);
-
+  const msgs = ['摸摸～', '嘿嘿', '喜歡你！', '開心！', '再摸～'];
+  showMessage(msgs[Math.floor(Math.random() * msgs.length)]);
   saveState();
 }
 
 // --- Rendering ---
 function renderStats() {
-  const stats = ['happiness', 'hunger', 'energy', 'cleanliness'];
-  stats.forEach(s => {
+  ['happiness', 'hunger', 'energy', 'cleanliness'].forEach(s => {
     const val = Math.max(0, Math.round(state[s]));
-    bars[s].style.width = val + '%';
-
-    // Color shift when low
-    if (val <= 20) {
-      bars[s].style.background = 'linear-gradient(90deg, #ff4757, #ff6b81)';
-    } else if (val <= 50) {
-      bars[s].style.background = 'linear-gradient(90deg, #ffa502, #ff7f50)';
-    } else {
-      // Reset to default
-      bars[s].style.background = '';
-    }
+    const stepped = Math.round(val / 5) * 5;
+    bars[s].style.width = stepped + '%';
+    bars[s].classList.toggle('low', val <= 20);
   });
-
-  petAgeEl.textContent = `${state.age} 天`;
-}
-
-function renderPetState() {
-  // Clear all state classes
-  pet.className = 'pet';
-  removeZzz();
-
-  if (!state.alive) {
-    pet.classList.add('dead');
-    mouth.className = 'mouth sick';
-    disableButtons(true);
-    return;
-  }
-
-  if (state.sick) {
-    pet.classList.add('sick');
-    mouth.className = 'mouth sick';
-    return;
-  }
-
-  if (state.sleeping) {
-    pet.classList.add('sleeping');
-    mouth.className = 'mouth sleeping';
-    addZzz();
-    return;
-  }
-
-  if (state.playing) {
-    pet.classList.add('playing');
-    mouth.className = 'mouth happy';
-    return;
-  }
-
-  if (state.eating) {
-    mouth.className = 'mouth eating';
-    return;
-  }
-
-  // Default - mood based on happiness
-  if (state.happiness >= 60) {
-    mouth.className = 'mouth happy';
-  } else if (state.happiness >= 30) {
-    mouth.className = 'mouth';
-  } else {
-    mouth.className = 'mouth sad';
-  }
-}
-
-// --- Zzz ---
-function addZzz() {
-  removeZzz();
-  const zzz = document.createElement('div');
-  zzz.className = 'zzz';
-  zzz.id = 'zzz-element';
-  zzz.textContent = '💤';
-  pet.appendChild(zzz);
-}
-
-function removeZzz() {
-  const existing = document.getElementById('zzz-element');
-  if (existing) existing.remove();
+  petAgeEl.textContent = `DAY ${state.age}`;
 }
 
 // --- Float Emoji ---
 function showFloatEmoji(emoji) {
   floatEmoji.textContent = emoji;
   floatEmoji.classList.remove('show');
-  // Force reflow
   void floatEmoji.offsetWidth;
   floatEmoji.classList.add('show');
   setTimeout(() => floatEmoji.classList.remove('show'), 1500);
@@ -356,16 +625,12 @@ function showMessage(text) {
   messageEl.textContent = text;
   messageEl.classList.add('show');
   clearTimeout(messageTimeout);
-  messageTimeout = setTimeout(() => {
-    messageEl.classList.remove('show');
-  }, 3000);
+  messageTimeout = setTimeout(() => messageEl.classList.remove('show'), 3000);
 }
 
 // --- Buttons ---
 function disableButtons(disabled) {
-  document.querySelectorAll('.btn').forEach(btn => {
-    btn.disabled = disabled;
-  });
+  [btnA, btnB, btnC].forEach(b => b.disabled = disabled);
 }
 
 // --- Utility ---
@@ -375,7 +640,7 @@ function clamp(val) {
 
 // --- Save / Load ---
 function saveState() {
-  const data = {
+  localStorage.setItem('tamagotchi_save', JSON.stringify({
     name: state.name,
     happiness: state.happiness,
     hunger: state.hunger,
@@ -386,53 +651,37 @@ function saveState() {
     sick: state.sick,
     sleeping: state.sleeping,
     lastUpdate: Date.now(),
-  };
-  localStorage.setItem('tamagotchi_save', JSON.stringify(data));
+  }));
 }
 
 function loadState() {
   const saved = localStorage.getItem('tamagotchi_save');
   if (!saved) return;
-
   try {
     const data = JSON.parse(saved);
     Object.assign(state, data);
-
-    // Calculate time-based decay while away
     const now = Date.now();
-    const elapsedSec = (now - (data.lastUpdate || now)) / 1000;
-    const decayTicks = Math.floor(elapsedSec / 5);
-
-    if (state.alive && decayTicks > 0) {
-      const decay = Math.min(decayTicks, 100); // Cap offline decay
-      state.happiness = clamp(state.happiness - decay * 0.8);
-      state.hunger = clamp(state.hunger - decay * 1);
-      state.energy = clamp(state.energy - decay * 0.6);
-      state.cleanliness = clamp(state.cleanliness - decay * 0.5);
-
-      // Age up
-      const ageGain = Math.floor(elapsedSec / 60);
-      state.age += ageGain;
-
+    const elapsed = (now - (data.lastUpdate || now)) / 1000;
+    const ticks = Math.min(Math.floor(elapsed / 5), 100);
+    if (state.alive && ticks > 0) {
+      state.happiness = clamp(state.happiness - ticks * 0.8);
+      state.hunger = clamp(state.hunger - ticks);
+      state.energy = clamp(state.energy - ticks * 0.6);
+      state.cleanliness = clamp(state.cleanliness - ticks * 0.5);
+      state.age += Math.floor(elapsed / 60);
       checkSick();
     }
-
     state.lastUpdate = now;
     state.playing = false;
     state.eating = false;
-
-    if (!state.alive) {
-      disableButtons(true);
-    }
-
+    if (!state.alive) disableButtons(true);
     if (state.sick) {
-      // Restart sick timer
       state.sickTimer = setTimeout(() => {
         if (state.sick && state.alive) die();
       }, 30000);
     }
   } catch (e) {
-    console.warn('Failed to load save data:', e);
+    console.warn('Load failed:', e);
   }
 }
 
