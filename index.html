@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q版電子雞 Tamagotchi</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+
+  <div class="device">
+    <div class="device-top">
+      <div class="antenna left"></div>
+      <div class="antenna right"></div>
+    </div>
+    <div class="device-body">
+      <div class="screen-frame">
+        <div class="screen" id="screen">
+          <!-- Status Bar -->
+          <div class="status-bar">
+            <div class="stat">
+              <span class="stat-icon">❤️</span>
+              <div class="stat-bar"><div class="stat-fill" id="happiness-bar"></div></div>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">🍔</span>
+              <div class="stat-bar"><div class="stat-fill" id="hunger-bar"></div></div>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">⚡</span>
+              <div class="stat-bar"><div class="stat-fill" id="energy-bar"></div></div>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">✨</span>
+              <div class="stat-bar"><div class="stat-fill" id="clean-bar"></div></div>
+            </div>
+          </div>
+
+          <!-- Pet Area -->
+          <div class="pet-area">
+            <div class="pet-container">
+              <div class="pet" id="pet">
+                <div class="pet-body">
+                  <div class="pet-face">
+                    <div class="eye left-eye"><div class="pupil"></div><div class="eye-shine"></div></div>
+                    <div class="eye right-eye"><div class="pupil"></div><div class="eye-shine"></div></div>
+                    <div class="blush left-blush"></div>
+                    <div class="blush right-blush"></div>
+                    <div class="mouth" id="mouth"></div>
+                  </div>
+                  <div class="pet-arm left-arm"></div>
+                  <div class="pet-arm right-arm"></div>
+                  <div class="pet-feet">
+                    <div class="foot left-foot"></div>
+                    <div class="foot right-foot"></div>
+                  </div>
+                </div>
+              </div>
+              <!-- Floating emojis -->
+              <div class="float-emoji" id="float-emoji"></div>
+            </div>
+            <div class="ground"></div>
+          </div>
+
+          <!-- Pet Info -->
+          <div class="pet-info">
+            <span class="pet-name" id="pet-name">小圓子</span>
+            <span class="pet-age" id="pet-age">0 天</span>
+          </div>
+
+          <!-- Message -->
+          <div class="message" id="message"></div>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="buttons">
+        <button class="btn feed-btn" onclick="feedPet()" title="餵食">
+          <span class="btn-icon">🍙</span>
+          <span class="btn-label">餵食</span>
+        </button>
+        <button class="btn play-btn" onclick="playWithPet()" title="玩耍">
+          <span class="btn-icon">🎾</span>
+          <span class="btn-label">玩耍</span>
+        </button>
+        <button class="btn sleep-btn" onclick="putToSleep()" title="睡覺">
+          <span class="btn-icon">💤</span>
+          <span class="btn-label">睡覺</span>
+        </button>
+        <button class="btn clean-btn" onclick="cleanPet()" title="清潔">
+          <span class="btn-icon">🛁</span>
+          <span class="btn-label">清潔</span>
+        </button>
+        <button class="btn heal-btn" onclick="healPet()" title="治療">
+          <span class="btn-icon">💊</span>
+          <span class="btn-label">治療</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
