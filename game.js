@@ -1,5 +1,56 @@
 // ===== Tamagotchi - Classic Mechanics =====
 
+// --- i18n ---
+const I18N = {
+  zh: {
+    zzz:'Zzz...', wakeUp:'早安！', sick:'不舒服...', goodbye:'再見了...',
+    evolve:'進化了！', full:'吃飽了！', yum:'好好吃！', sleeping:'在睡覺...',
+    healthy:'很健康唷！', moreMed:'再吃一點藥...', cured:'治好了！',
+    clean:'好乾淨！', alreadyClean:'已經很乾淨了！',
+    discipline:'管教！', noNeed:'現在不需要',
+    cantPlay:'現在不能玩', hungry:'肚子好餓...',
+    lightOn:'開燈', lightOff:'關燈',
+    pet:['摸摸～','嘿嘿','好喜歡！','開心！'],
+    attHunger:'肚子餓了！', attHappy:'好無聊...', attDisc:'要管教！',
+    attSick:'不舒服...', attLight:'要關燈！', attNone:'沒事唷！',
+    leftRight:'← 還是 →?', round:'第{n}/5回合', quit:'C:離開',
+    win:'贏了！', lose:'輸了', score:'得分',
+    meal:'正餐 🍙', snack:'零食 🍬',
+  },
+  en: {
+    zzz:'Zzz...', wakeUp:'Good morning!', sick:'Feeling sick...', goodbye:'Goodbye...',
+    evolve:'Evolved!', full:'Full!', yum:'Yummy!', sleeping:'Sleeping...',
+    healthy:'I\'m healthy!', moreMed:'More medicine...', cured:'All better!',
+    clean:'Squeaky clean!', alreadyClean:'Already clean!',
+    discipline:'Discipline!', noNeed:'Not needed now',
+    cantPlay:'Can\'t play now', hungry:'So hungry...',
+    lightOn:'Light ON', lightOff:'Light OFF',
+    pet:['Pat pat~','Hehe','Love you!','Happy!'],
+    attHunger:'Hungry!', attHappy:'Bored...', attDisc:'Needs discipline!',
+    attSick:'Feeling sick...', attLight:'Turn off light!', attNone:'All good!',
+    leftRight:'LEFT or RIGHT?', round:'ROUND {n}/5', quit:'C:QUIT',
+    win:'WIN!', lose:'LOSE', score:'SCORE',
+    meal:'MEAL 🍙', snack:'SNACK 🍬',
+  },
+  ja: {
+    zzz:'Zzz...', wakeUp:'おはよう！', sick:'具合が悪い...', goodbye:'さようなら...',
+    evolve:'進化した！', full:'お腹いっぱい！', yum:'もぐもぐ！', sleeping:'寝てる...',
+    healthy:'元気だよ！', moreMed:'もう少し...', cured:'治った！',
+    clean:'ピカピカ！', alreadyClean:'きれいだよ！',
+    discipline:'しつけ！', noNeed:'今は必要ない',
+    cantPlay:'今は遊べない', hungry:'お腹すいた...',
+    lightOn:'電気ON', lightOff:'電気OFF',
+    pet:['なでなで～','えへへ','うれしい！','もっと！'],
+    attHunger:'お腹すいた！', attHappy:'つまらない...', attDisc:'しつけて！',
+    attSick:'具合が悪い...', attLight:'電気消して！', attNone:'なにもないよ！',
+    leftRight:'← or →?', round:'ROUND {n}/5', quit:'C:やめる',
+    win:'WIN!', lose:'LOSE', score:'SCORE',
+    meal:'ごはん 🍙', snack:'おかし 🍬',
+  },
+};
+let LANG = localStorage.getItem('tama_lang') || 'zh';
+function t(key) { return (I18N[LANG] && I18N[LANG][key]) || I18N.en[key] || key; }
+
 // --- Sprites (16x16) ---
 // 0=transparent,1=dark,2=mid/sick,3=body
 const SPRITES = {
@@ -134,6 +185,18 @@ function init() {
     else if (e.key==='s'||e.key==='S'||e.key==='Enter'||e.key==='ArrowDown') btnB();
     else if (e.key==='d'||e.key==='D'||e.key==='Escape'||e.key==='ArrowRight') btnC();
   });
+
+  // Language switcher
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      LANG = btn.dataset.lang;
+      localStorage.setItem('tama_lang', LANG);
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === LANG));
+      render();
+    });
+    if (btn.dataset.lang === LANG) btn.classList.add('active');
+    else btn.classList.remove('active');
+  });
 }
 
 function createStars() {
@@ -225,7 +288,7 @@ function checkSleep() {
   const now = new Date();
   if (now.getHours() >= h && !S.sleeping) {
     S.sleeping = true;
-    showMsg('Zzz...');
+    showMsg(t('zzz'));
     if (!S.lightOff) setAttention('light', Date.now());
     render();
   }
@@ -242,7 +305,7 @@ function checkWake() {
     lcd.classList.remove('light-off');
     S.age++;
     clearAttention();
-    showMsg('おはよう！');
+    showMsg(t('wakeUp'));
     render();
   }
 }
@@ -276,7 +339,7 @@ function makeSick() {
   S.sick = true;
   S.medicineNeeded = 1 + Math.floor(Math.random() * 2);
   setAttention('sick', Date.now());
-  showMsg('具合が悪い...');
+  showMsg(t('sick'));
 }
 
 function checkDeath() {
@@ -287,7 +350,7 @@ function checkDeath() {
 function die() {
   S.alive = false; S.sick = false; S.sleeping = false;
   clearAttention(); render(); drawPet();
-  showMsg('さようなら...');
+  showMsg(t('goodbye'));
   document.querySelectorAll('.round-btn').forEach(b => b.disabled = true);
   save();
 }
@@ -330,7 +393,7 @@ function evolve(newId) {
   }
   S.careMistakes = 0;
   showFloat('⭐');
-  showMsg('進化した！');
+  showMsg(t('evolve'));
   render();
 }
 
@@ -393,22 +456,22 @@ function closeOverlays() {
 
 // --- Actions ---
 function openFeed() {
-  if (S.sleeping) { showMsg('寝てる...'); closeOverlays(); return; }
+  if (S.sleeping) { showMsg(t('sleeping')); closeOverlays(); return; }
   UI.mode = 'feed'; UI.feedChoice = 0;
   showFeedMenu();
 }
 
 function showFeedMenu() {
   const o = overlays.feed;
-  o.innerHTML = `<div class="row${UI.feedChoice===0?' sel':''}"><span class="ptr">${UI.feedChoice===0?'▶':''}</span>MEAL おにぎり</div>` +
-    `<div class="row${UI.feedChoice===1?' sel':''}"><span class="ptr">${UI.feedChoice===1?'▶':''}</span>SNACK おかし</div>`;
+  o.innerHTML = `<div class="row${UI.feedChoice===0?' sel':''}"><span class="ptr">${UI.feedChoice===0?'▶':''}</span>${t('meal')}</div>` +
+    `<div class="row${UI.feedChoice===1?' sel':''}"><span class="ptr">${UI.feedChoice===1?'▶':''}</span>${t('snack')}</div>`;
   o.classList.add('show');
 }
 
 function doFeed(type) {
   if (S.sleeping) return;
   if (type === 'meal') {
-    if (S.hunger >= 4) { showMsg('お腹いっぱい！'); return; }
+    if (S.hunger >= 4) { showMsg(t('full')); return; }
     S.hunger = Math.min(4, S.hunger + 1);
     S.weight = Math.min(99, S.weight + 1);
     showFloat('🍙');
@@ -419,7 +482,7 @@ function doFeed(type) {
     showFloat('🍬');
     if (S.needsAttention && S.attentionType === 'happiness') clearAttention();
   }
-  showMsg('もぐもぐ！');
+  showMsg(t('yum'));
   render();
   save();
 }
@@ -428,29 +491,29 @@ function toggleLight() {
   S.lightOff = !S.lightOff;
   lcd.classList.toggle('light-off', S.lightOff);
   if (S.lightOff && S.needsAttention && S.attentionType === 'light') clearAttention();
-  showMsg(S.lightOff ? '電気OFF' : '電気ON');
+  showMsg(S.lightOff ? t('lightOff') : t('lightOn'));
   closeOverlays();
 }
 
 function doMedicine() {
-  if (!S.sick) { showMsg('元気だよ！'); closeOverlays(); return; }
+  if (!S.sick) { showMsg(t('healthy')); closeOverlays(); return; }
   S.medicineNeeded--;
   if (S.medicineNeeded <= 0) {
     S.sick = false;
     if (S.needsAttention && S.attentionType === 'sick') clearAttention();
-    showMsg('治った！');
+    showMsg(t('cured'));
     showFloat('💊');
   } else {
-    showMsg('もう少し...');
+    showMsg(t('moreMed'));
   }
   render(); save(); closeOverlays();
 }
 
 function doClean() {
-  if (S.poopCount === 0) { showMsg('きれいだよ！'); closeOverlays(); return; }
+  if (S.poopCount === 0) { showMsg(t('alreadyClean')); closeOverlays(); return; }
   S.poopCount = 0;
   showFloat('✨');
-  showMsg('ピカピカ！');
+  showMsg(t('clean'));
   render(); save(); closeOverlays();
 }
 
@@ -460,9 +523,9 @@ function doDiscipline() {
     S.disciplineCalls++;
     clearAttention();
     showFloat('📢');
-    showMsg('しつけ！');
+    showMsg(t('discipline'));
   } else {
-    showMsg('今は必要ない');
+    showMsg(t('noNeed'));
   }
   render(); save(); closeOverlays();
 }
@@ -482,10 +545,10 @@ function showStatus() {
 
 function showAttention() {
   UI.mode = 'attention';
-  let msg = 'なにもないよ！';
+  let msg = t('attNone');
   if (S.needsAttention) {
-    const types = {hunger:'お腹すいた！',happiness:'つまらない...',discipline:'しつけて！',sick:'具合が悪い...',light:'電気消して！'};
-    msg = types[S.attentionType] || msg;
+    const types = {hunger:'attHunger',happiness:'attHappy',discipline:'attDisc',sick:'attSick',light:'attLight'};
+    msg = t(types[S.attentionType]) || msg;
   }
   overlays.attention.innerHTML = `<div class="game-big">${msg}</div>`;
   overlays.attention.classList.add('show');
@@ -493,8 +556,8 @@ function showAttention() {
 
 // --- Mini Game ---
 function startGame() {
-  if (S.sleeping || S.sick) { showMsg('今は遊べない'); closeOverlays(); return; }
-  if (S.hunger <= 0) { showMsg('お腹すいた...'); closeOverlays(); return; }
+  if (S.sleeping || S.sick) { showMsg(t('cantPlay')); closeOverlays(); return; }
+  if (S.hunger <= 0) { showMsg(t('hungry')); closeOverlays(); return; }
   UI.mode = 'game'; UI.gameRound = 0; UI.gameScore = 0;
   gameNextRound();
 }
@@ -508,7 +571,7 @@ function gameNextRound() {
     if (perfect) S.happiness = Math.min(4, S.happiness + 2);
     else if (won) S.happiness = Math.min(4, S.happiness + 1);
     if (S.needsAttention && S.attentionType === 'happiness') clearAttention();
-    overlays.game.innerHTML = `<div class="game-big">${won?'WIN!':'LOSE'}</div><div class="game-info">SCORE: ${UI.gameScore}/5</div><div class="game-info">${won?(perfect?'HP+2 WT-1':'HP+1 WT-1'):'WT-1'}</div><div class="game-info">B:OK</div>`;
+    overlays.game.innerHTML = `<div class="game-big">${won?t('win'):t('lose')}</div><div class="game-info">${t('score')}: ${UI.gameScore}/5</div><div class="game-info">${won?(perfect?'HP+2 WT-1':'HP+1 WT-1'):'WT-1'}</div><div class="game-info">B:OK</div>`;
     UI.gamePhase = 'result';
     render(); save();
     return;
@@ -516,14 +579,14 @@ function gameNextRound() {
   UI.gameRound++;
   UI.gameAnswer = Math.random() < 0.5 ? 'left' : 'right';
   UI.gamePhase = 'guess';
-  overlays.game.innerHTML = `<div class="game-info">ROUND ${UI.gameRound}/5</div><div class="game-big">← or →?</div><div class="game-info">A:LEFT  B:RIGHT</div><div class="game-info">C:QUIT</div>`;
+  overlays.game.innerHTML = `<div class="game-info">${t('round').replace('{n}',UI.gameRound)}</div><div class="game-big">${t('leftRight')}</div><div class="game-info">A:←  B:→</div><div class="game-info">${t('quit')}</div>`;
   overlays.game.classList.add('show');
 }
 
 function gameGuess(dir) {
   const correct = dir === UI.gameAnswer;
   if (correct) UI.gameScore++;
-  overlays.game.innerHTML = `<div class="game-info">ROUND ${UI.gameRound}/5</div><div class="game-big">${UI.gameAnswer==='left'?'← LEFT':'RIGHT →'}</div><div class="game-big">${correct?'◯':'✕'}</div><div class="game-info">SCORE: ${UI.gameScore}  B:NEXT</div>`;
+  overlays.game.innerHTML = `<div class="game-info">${t('round').replace('{n}',UI.gameRound)}</div><div class="game-big">${UI.gameAnswer==='left'?'← LEFT':'RIGHT →'}</div><div class="game-big">${correct?'◯':'✕'}</div><div class="game-info">${t('score')}: ${UI.gameScore}  B:NEXT</div>`;
   UI.gamePhase = 'result';
 }
 
@@ -533,7 +596,7 @@ function petClick() {
   S.happiness = Math.min(4, S.happiness + (S.happiness < 4 ? 0 : 0));
   const emojis = ['💕','❤️','⭐','💖'];
   showFloat(emojis[Math.floor(Math.random()*emojis.length)]);
-  const msgs = ['なでなで～','えへへ','うれしい！','もっと！'];
+  const msgs = t('pet');
   showMsg(msgs[Math.floor(Math.random()*msgs.length)]);
 }
 
